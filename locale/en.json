@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Prompt Assistant",
+    "description": "Rewrite a short Chinese idea into a structured text-to-image or image-editing prompt, using the two bundled system prompts."
+  }
+}

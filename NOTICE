@@ -1,0 +1,6 @@
+# 来源与声明
+
+- `prompts/t2i.md`、`prompts/edit.md`：两套提示词改写指令，由仓库作者提供。它们不是本项目的原创研究，使用前请自行确认来源与授权；商业用途请替换成你自己的版本。
+- `specs/`：各模型的提示词写法整理自厂商公开文档（OpenAI、Black Forest Labs、阿里、字节、MiniMax、Runway、Midjourney 等），每个文件里带来源 URL 和来源等级。这些是事实性整理，不代表厂商背书。
+- MiniMax H3 的完整写法不随本仓库分发：装好 `h3-prompt-writing` skill 后，插件会直接读它的 `SKILL.md` 和 `references/*.txt`；没装就走联网查询。
+- DeepSeek Harness 是第三方产品，本项目只是一个运行在它里面的插件，与 DeepSeek 官方无关。

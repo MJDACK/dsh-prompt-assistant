@@ -1,0 +1,59 @@
+{
+  "name": "dsh-prompt-assistant",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "DeepSeek Harness 侧边栏的提示词助手：文生图 / 图像编辑 / 模型原生提示词（moss、anima、H3…），带参考图和对话调整",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "prompt",
+    "prompt-engineering",
+    "text-to-image",
+    "image-editing"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MJDACK/dsh-prompt-assistant.git"
+  },
+  "homepage": "https://github.com/MJDACK/dsh-prompt-assistant#readme",
+  "bugs": {
+    "url": "https://github.com/MJDACK/dsh-prompt-assistant/issues"
+  },
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg"
+  },
+  "files": [
+    "index.js",
+    "client.js",
+    "cordis.patch.yml",
+    "locale/*.json",
+    "icon.svg",
+    "prompts/*.md",
+    "specs/**/*.md",
+    "docs/*.png",
+    "README.md",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": [
+        "@deepseek-ai/dsh-client-locale",
+        "@deepseek-ai/dsh-client-ui-layout",
+        "@deepseek-ai/dsh-client-ui-sidebar"
+      ]
+    }
+  },
+  "icon": "./icon.svg"
+}
