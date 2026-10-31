@@ -537,8 +537,8 @@ export function apply(ctx, rawConfig) {
     throw new Error('找不到系统提示词文件：' + candidates[0])
   }
 
-  async function modelCatalog(c) {
-    if (catalogCache.value && Date.now() - catalogCache.at < 10 * 60 * 1000) return catalogCache.value
+  async function modelCatalog(c, force) {
+    if (!force && catalogCache.value && Date.now() - catalogCache.at < 30 * 1000) return catalogCache.value
     const providers = c.llm.listProviders()
     const withModels = await Promise.all(
       providers.map(async (provider) => {
@@ -588,7 +588,8 @@ export function apply(ctx, rawConfig) {
             return
           }
           try {
-            const catalog = await modelCatalog(c)
+            const refresh = new URL(req.url, 'http://127.0.0.1').searchParams.get('refresh') === '1'
+            const catalog = await modelCatalog(c, refresh)
             const sources = {}
             for (const mode of Object.keys(MODES)) {
               try {

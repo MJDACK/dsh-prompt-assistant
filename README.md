@@ -24,6 +24,7 @@ DeepSeek Harness（DSH）侧边栏里的**提示词助手**：一句话中文，
 - 图像编辑的多图引用按 `<image1>(简短描述)` 的格式写（如 `<image1>(穿白裙的女孩)`、`<image2>(夜晚的城市街道)`），下游能直接看出每张图是什么。
 - 拖拽 / 粘贴 / 点 `+` 传图；前端统一重编码成 PNG/JPEG（最长边 2048），WebP、超大图、MIME 不符都不会到上游才报错。
 - 模型下拉会标出不支持图片的模型；带图提交时前后端都会拦。
+- 新加了本地模型？点下拉右边的 `↻` 重新读取，不用重启（Host 侧缓存 30 秒，面板每次打开也会刷一次）。
 - 模型提示词模式内置 **24 个模型 / 97 个别名**的规范（FLUX、Qwen-Image、Seedream、Midjourney、SDXL、Nano Banana、Veo、Kling、Wan、Runway…），模型名不区分大小写，半角/全角冒号都认。
 - 没收录的模型：先搜官方指南，抓正文（宿主 fetch 被挡时直接抓），写进 `~/.dsh/prompt-assistant/specs/<model>.md`，下次直接命中。
 - 装了 [`h3-prompt-writing`](https://github.com/MiniMax-AI/MiniMax-H3/tree/main/skills) skill 的话，`h3:` / `h3-ref:` 会自动用它的官方指南（T2VA/I2VA/FL2VA/L2VA 三段式、Ref2VA 六段式）。

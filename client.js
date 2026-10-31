@@ -58,6 +58,7 @@ window.__ModuleLoader__.load({
       '.dshpa-chip b{font-weight:600;}',
       '.dshpa-meta{display:flex;flex-wrap:wrap;gap:12px;font-size:11.5px;color:var(--dsw-alias-label-secondary);margin-bottom:10px;}',
       '.dshpa-select{border:1px solid var(--dsw-alias-border-l2);border-radius:8px;background:var(--dsw-alias-bg-layer-1);color:var(--dsw-alias-label-primary);font:inherit;font-size:12px;padding:5px 8px;max-width:260px;}',
+      '.dshpa-model-row{display:flex;align-items:center;gap:6px;}',
       '.dshpa-spin{display:inline-block;width:12px;height:12px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;margin-right:7px;vertical-align:-1px;animation:dshpa-spin .8s linear infinite;}',
       '@keyframes dshpa-spin{to{transform:rotate(360deg)}}',
       '.dshpa-chat{flex:none;display:flex;flex-direction:column;min-height:0;max-height:46%;border:1px solid var(--dsw-alias-border-l1);border-radius:14px;background:var(--dsw-alias-bg-layer-1);overflow:hidden;}',
@@ -246,23 +247,29 @@ window.__ModuleLoader__.load({
         return () => document.removeEventListener('mousedown', onDown)
       }, [specOpen])
 
-      useEffect(() => {
-        if (memory.info) return undefined
-        let alive = true
-        fetch('/dsh-prompt-assistant/info', { headers: { accept: 'application/json' } })
+      function loadInfo(force) {
+        const url = '/dsh-prompt-assistant/info' + (force ? '?refresh=1' : '')
+        return fetch(url, { headers: { accept: 'application/json' } })
           .then((response) => response.json())
           .then((body) => {
-            if (!alive || !body || body.ok !== true) return
+            if (!body || body.ok !== true) return
             memory.info = body
             setInfo(body)
-            if (!memory.modelKey && body.default && body.default.provider && body.default.model) {
-              setModelKey(body.default.provider + '|' + body.default.model)
+            const keys = []
+            for (const provider of body.providers || []) {
+              for (const model of provider.models || []) keys.push(provider.id + '|' + model.id)
+            }
+            if (!memory.modelKey || !keys.includes(memory.modelKey)) {
+              if (body.default && body.default.provider && body.default.model) {
+                setModelKey(body.default.provider + '|' + body.default.model)
+              }
             }
           })
           .catch(() => {})
-        return () => {
-          alive = false
-        }
+      }
+
+      useEffect(() => {
+        loadInfo(false)
       }, [])
 
       function addFiles(fileList) {
@@ -467,20 +474,31 @@ window.__ModuleLoader__.load({
           h(
             'div',
             { className: 'dshpa-head-right', ref: specRef },
-            modelOptions.length
-              ? h(
-                  'select',
-                  {
-                    className: 'dshpa-select',
-                    value: modelKey,
-                    onChange: (event) => setModelKey(event.target.value),
-                    'aria-label': '模型',
-                  },
-                  modelOptions.map((option) => h('option', { key: option.value, value: option.value }, option.label)),
-                )
-              : info && info.default && info.default.model
-                ? h('div', { className: 'dshpa-hint' }, info.default.provider + ' / ' + info.default.model)
-                : null,
+            h(
+              'div',
+              { className: 'dshpa-model-row' },
+              modelOptions.length
+                ? h(
+                    'select',
+                    {
+                      className: 'dshpa-select',
+                      value: modelKey,
+                      onChange: (event) => setModelKey(event.target.value),
+                      'aria-label': '模型',
+                    },
+                    modelOptions.map((option) => h('option', { key: option.value, value: option.value }, option.label)),
+                  )
+                : info && info.default && info.default.model
+                  ? h('div', { className: 'dshpa-hint' }, info.default.provider + ' / ' + info.default.model)
+                  : null,
+              h('button', {
+                type: 'button',
+                className: 'dshpa-btn',
+                style: { padding: '4px 9px', fontSize: '12px' },
+                title: '重新读取模型列表：新加的本地模型不用重启',
+                onClick: () => loadInfo(true),
+              }, '↻'),
+            ),
             mode === 'model' && specItems.length
               ? h(
                   'div',
